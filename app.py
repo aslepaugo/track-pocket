@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -24,10 +24,27 @@ products = [
     
 ]
 
+def valid_product(product_object):
+    if "name" in product_object and "id" in product_object and "price" in product_object:
+        return True
+    else:
+        return False
+
 
 @app.route("/products")
 def get_products():
     return jsonify({'products': products})
+
+
+@app.route("/products", methods=['POST'])
+def add_book():
+    request_data = request.get_data()
+    if valid_product(request_data):
+        products.insert(0, request_data)
+        return "True"
+    else:
+        return "False"
+
 
 
 @app.route("/products/<int:id>")
