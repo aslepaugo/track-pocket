@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, Response
+import json
 
 app = Flask(__name__)
 
@@ -39,12 +40,13 @@ def get_products():
 @app.route("/products", methods=['POST'])
 def add_book():
     request_data = request.get_json()
-    new_product = {
+
+    if valid_product(request_data):
+        new_product = {
         "id": request_data["id"],
         "name": request_data["name"],
         "price": request_data["price"]
     }
-    if valid_product(request_data):
         products.insert(0, new_product)
         response = Response("", 201, mimetype='application/json')
         response.headers["Location"] = "/products/" + str(new_product["id"])
@@ -54,7 +56,7 @@ def add_book():
             "error": "Invalid product passed in request",
             "help": "Please refer to the following link https://help.me/docs/api#post"
         }
-        response = Response(invalid_product_message, 400, mimetype='application/json')
+        response = Response(json.dumps(invalid_product_message), status = 400, mimetype='application/json')
         return response
 
 
