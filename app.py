@@ -47,9 +47,15 @@ def add_book():
     if valid_product(request_data):
         products.insert(0, new_product)
         response = Response("", 201, mimetype='application/json')
+        response.headers["Location"] = "/products/" + str(new_product["id"])
         return response
     else:
-        return "False"
+        invalid_product_message = {
+            "error": "Invalid product passed in request",
+            "help": "Please refer to the following link https://help.me/docs/api#post"
+        }
+        response = Response(invalid_product_message, 400, mimetype='application/json')
+        return response
 
 
 
