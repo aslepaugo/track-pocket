@@ -59,6 +59,24 @@ def add_book():
         response = Response(json.dumps(invalid_product_message), status = 400, mimetype='application/json')
         return response
 
+@app.route("/products/<int:id>", methods=['PUT'])
+def replace_product(id):
+    request_data = request.get_json()
+    print(request_data)
+    new_product = {
+        'name': request_data['name'],
+        'price': request_data['price'],
+        'id': id 
+    }
+
+    i = 0
+    for product in products:
+        currentId = product['id']
+        if currentId == id:
+            products[i] = new_product
+        i += 1
+    return Response("", 204)
+
 
 
 @app.route("/products/<int:id>")
